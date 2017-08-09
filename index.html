@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<script src="js/select.js"></script>
+	<style>
+		*{
+			padding: 0;
+			margin: 0;
+		}
+		.box{
+			width: 900px;
+			margin:30px auto;
+		}
+		#small{
+			border:1px solid #aaa;
+			padding:2px;
+			float: left;
+			position: relative;
+		}
+		#small img{
+			width: 200px;
+			width: 200px;
+		}
+		#small #mark{
+			width: 80px;
+			height: 80px;
+			position: absolute;
+			top: 0;
+			left:0;
+			background: rgba(0,0,0,0.1);
+			cursor: move;
+		}
+		#large{
+			border:1px solid #aaa;
+			padding:2px;
+			width: 400px;
+			height: 400px;
+			float: left;
+			margin-left: 10px;
+			overflow: hidden;
+			display: none;
+			position: relative;
+		}
+		#large img{
+			width: 800px;
+			height: 800px;
+			position: absolute;
+			top:0;
+			left:0;
+		}
+	</style>
+	<script>
+		window.onload=function(){
+			$('#small').onmouseover=function(){
+				$('#large').style.display='block';
+			}
+			$('#small').onmouseout=function(){
+				$('#large').style.display='none';
+			}
+			$('#small').onmousemove=function(event){
+				var e=event||window.event;//event.target  鼠标在点击或移动时所在的盒子,移动的参考系
+				var x=0;
+				var y=0; 
+				if(e.target==$('#mark')){
+					//忽略所有参考系是mark的事件
+					// 丢弃了很多事件,移动会卡顿
+					x=e.offsetX+$('#mark').offsetLeft;
+					y=e.offsetY+$('#mark').offsetTop;
+				}else{
+					x=e.offsetX;
+					y=e.offsetY;
+				}
+				//让mark盒子不移出small盒子边界
+				//当鼠标距离small盒子小于mark盒子一半时,mark盒子的位置与small盒子左边界平齐
+				var m_w=$('#mark').offsetWidth/2;//灰色盖子一半
+				var l_m_w=$('#small').offsetWidth-$('#mark').offsetWidth/2;
+				var m_h=$('#mark').offsetHeight/2;
+				var l_m_h=$('#small').offsetHeight-$('#mark').offsetHeight/2;
+				console.log(x);
+				x = x<m_w ? m_w : (x > l_m_w ? l_m_w : x); 
+				y = y<m_h ? m_h : (y > l_m_h ? l_m_h : y); 
+
+				$('#mark').style.left=x-m_w+'px';
+				$('#mark').style.top=y-m_h+'px';
+				//大图切换显示位置
+				$('#ml').style.left=-((x-m_w)*4)+'px';
+				$('#ml').style.top=-((y-m_h)*4)+'px';
+			}	
+		}
+	</script>
+</head>
+<body>
+	<div class="box">
+		<div id="small">
+			<img id="ms" src="images/mouse_s.jpg" alt="">
+			<div id="mark"></div>
+		</div>
+		<div id="large">
+			<img id="ml" src="images/mouse_l.jpg" alt="">
+		</div>
+	</div>
+</body>
+</html>
